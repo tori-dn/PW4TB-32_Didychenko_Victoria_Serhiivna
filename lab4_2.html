@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Калькулятор струмів КЗ на шинах 10 кВ ГПП</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #e6f2ff;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background-color: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      border: 2px solid #90caf9;
+    }
+
+    h2 {
+      text-align: center;
+      color: #004080;
+    }
+
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 15px;
+      border: 1px solid #90caf9;
+      border-radius: 6px;
+    }
+
+    button {
+      width: 100%;
+      background-color: #3399ff;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background-color: #267acc;
+    }
+
+    .result {
+      background-color: #f0f8ff;
+      padding: 15px;
+      margin-top: 20px;
+      border-radius: 8px;
+      text-align: center;
+      font-size: 16px;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Калькулятор струмів КЗ на шинах 10 кВ ГПП</h2>
+
+    <label>Потужність КЗ (Sкз), МВА:</label>
+    <input type="number" id="kKZPower" step="0.01" />
+    <button onclick="web_calculator.calculator2()">Розрахувати</button>
+    <div id="result2" class="result"></div>
+  </div>
+
+  <script>
+    class web_calculator {
+      static calculator2() {
+        const kUsnVal = 10.5;
+        const kUkPercVal = 10.5;
+        const kSnomtVal = 6.3;
+        const kKZPower = parseFloat(document.getElementById("kKZPower").value);
+        if (isNaN(kKZPower)) { alert("Будь ласка, введіть значення."); return; }
+        let kSumXVal = (kUsnVal**2)/kKZPower + (kUkPercVal/100)*((kUsnVal**2)/kSnomtVal);
+        let kIp0Val = kUsnVal/(Math.sqrt(3)*kSumXVal);
+        document.getElementById("result2").innerHTML =
+          `Результати:<br>Опір: ${kSumXVal.toFixed(2)} Ом<br>` +
+          `Поч. струм: ${kIp0Val.toFixed(2)} кА`;
+      }
+    }
+  </script>
+</body>
+</html>

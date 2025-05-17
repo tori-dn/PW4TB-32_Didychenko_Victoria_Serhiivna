@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Калькулятор струмів КЗ для ХПнЕМ</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #e6f2ff;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background-color: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      border: 2px solid #90caf9;
+    }
+
+    h2 {
+      text-align: center;
+      color: #004080;
+    }
+
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 15px;
+      border: 1px solid #90caf9;
+      border-radius: 6px;
+    }
+
+    button {
+      width: 100%;
+      background-color: #3399ff;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background-color: #267acc;
+    }
+
+    .result {
+      background-color: #f0f8ff;
+      padding: 15px;
+      margin-top: 20px;
+      border-radius: 8px;
+      text-align: center;
+      font-size: 16px;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Калькулятор струмів КЗ для ХПнЕМ</h2>
+
+    <label>Номінальна напруга (Uвн), кВ:</label>
+    <input type="number" id="kUvn" step="0.01" />
+    <label>Макс. напруга КЗ (Uкmax), %:</label>
+    <input type="number" id="kUkmax" step="0.01" />
+    <label>Номінальна потужність (Sномт), МВА:</label>
+    <input type="number" id="kSnomt" step="0.01" />
+    <label>Опір системи (Rш), Ом (норм. режим):</label>
+    <input type="number" id="kRsh" step="0.01" />
+    <label>Реакт. опір системи (Xсн), Ом (норм. режим):</label>
+    <input type="number" id="kXcn" step="0.01" />
+    <label>Опір системи (Rш), Ом (мін. режим):</label>
+    <input type="number" id="kRshMin" step="0.01" />
+    <label>Реакт. опір системи (Xс), Ом (мін. режим):</label>
+    <input type="number" id="kXcMin" step="0.01" />
+    <button onclick="web_calculator.calculator3()">Розрахувати</button>
+    <div id="result3" class="result"></div>
+  </div>
+
+  <script>
+    class web_calculator {
+      static calculator3() {
+        const kUvnVal = parseFloat(document.getElementById("kUvn").value);
+        const kUkmaxVal = parseFloat(document.getElementById("kUkmax").value);
+        const kSnomtVal = parseFloat(document.getElementById("kSnomt").value);
+        const kRshVal = parseFloat(document.getElementById("kRsh").value);
+        const kXcnVal = parseFloat(document.getElementById("kXcn").value);
+        const kRshMinVal = parseFloat(document.getElementById("kRshMin").value);
+        const kXcMinVal = parseFloat(document.getElementById("kXcMin").value);
+        if ([kUvnVal,kUkmaxVal,kSnomtVal,kRshVal,kXcnVal,kRshMinVal,kXcMinVal].some(isNaN)) {
+          alert("Будь ласка, введіть усі значення."); return;
+        }
+        let kXtVal = (kUkmaxVal * kUvnVal**2)/(100*kSnomtVal);
+        let kXshVal = kXcnVal + kXtVal;
+        let kZshVal = Math.sqrt(kRshVal**2 + kXshVal**2);
+        let kXshMinVal = kXcMinVal + kXtVal;
+        let kZshMinVal = Math.sqrt(kRshMinVal**2 + kXshMinVal**2);
+        let sqrt3 = Math.sqrt(3);
+        let kIsh3Val = (kUvnVal*1000)/(sqrt3*kZshVal);
+        let kIsh2Val = kIsh3Val*(sqrt3/2);
+        let kIsh3MinVal = (kUvnVal*1000)/(sqrt3*kZshMinVal);
+        let kIsh2MinVal = kIsh3MinVal*(sqrt3/2);
+        document.getElementById("result3").innerHTML =
+          `<p>Реакт. опір: ${kXtVal.toFixed(2)}</p>` +
+          `<p>Опір (норм. режим) Z: ${kZshVal.toFixed(2)} | X: ${kXshVal.toFixed(2)}</p>` +
+          `<p>Опір (мін. режим) Z: ${kZshMinVal.toFixed(2)} | X: ${kXshMinVal.toFixed(2)}</p>` +
+          `<p>Струм (норм. режим) I3: ${kIsh3Val.toFixed(2)} | І2: ${kIsh2Val.toFixed(2)}</p>` +
+          `<p>Струм (мін. режим) I3: ${kIsh3MinVal.toFixed(2)} | І2: ${kIsh2MinVal.toFixed(2)}</p>`;
+      }
+    }
+  </script>
+</body>
+</html>
